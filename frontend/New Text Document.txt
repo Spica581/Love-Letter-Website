@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Love Letter Website</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>Welcome to Love Letter Website</h1>
+  <p>This is the homepage of your project.</p>
+  <script src="script.js"></script>
+</body>
+</html>
