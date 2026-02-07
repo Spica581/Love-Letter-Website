@@ -1,0 +1,3 @@
+import { useParams } from 'react-router-dom';
+// Similar to LetterPreview, fetch via params.id and render
+// ...
