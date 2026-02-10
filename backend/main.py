@@ -1,15 +1,29 @@
-import os
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from .routers import users, letters, uploads
+from dotenv import load_dotenv
+import os
 
-app = FastAPI()
+load_dotenv()
+
+from routers import users, letters, uploads
+
+app = FastAPI(title="Love Letter App")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 app.include_router(users.router)
 app.include_router(letters.router)
 app.include_router(uploads.router)
+
 app.mount("/static", StaticFiles(directory="uploads"), name="static")
 
-# Public route for shared letters
-@app.get("/letter/{letter_id}")
-async def view_letter(letter_id: str):
-    return await letters.get_letter(letter_id)  # Returns JSON for frontend to render
+@app.get("/")
+def home():
+    return {"message": "Love Letter API is running"}
