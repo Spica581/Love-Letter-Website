@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field
-from typing import Optional
+from typing import Optional, List
 from bson import ObjectId
 
 class PyObjectId(ObjectId):
@@ -7,38 +7,29 @@ class PyObjectId(ObjectId):
     def __get_validators__(cls):
         yield cls.validate
 
-    @classmethod
-    def validate(cls, v):
-        if not ObjectId.is_valid(v):
-            raise ValueError("Invalid objectid")
-        return ObjectId(v)
-
 class User(BaseModel):
     id: PyObjectId = Field(default_factory=PyObjectId, alias="_id")
     username: str
-    password: str  # Hashed
-    tier: int = 1  # 1,2,3
+    password: str
+    tier: int = 1
 
     class Config:
         allow_population_by_field_name = True
-        arbitrary_types_allowed = True
         json_encoders = {ObjectId: str}
 
 class Letter(BaseModel):
     id: PyObjectId = Field(default_factory=PyObjectId, alias="_id")
     user_id: str
-    content: str  # Main letter text
-    names: dict  # {from: "", to: ""}
+    from_name: str
+    to_name: str
     date: str
-    colors: dict  # {bg: "#fff", text: "#000", etc.}
-    inside_jokes: Optional[list] = None
+    content: str
+    colors: dict
     hidden_message: Optional[str] = None
-    password: Optional[str] = None  # For Tier 3
-    photos: Optional[list] = None  # URLs or base64
+    password: Optional[str] = None
     music_url: Optional[str] = None
     tier: int
 
     class Config:
         allow_population_by_field_name = True
-        arbitrary_types_allowed = True
         json_encoders = {ObjectId: str}
