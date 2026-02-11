@@ -1,7 +1,7 @@
 from fastapi import APIRouter, UploadFile, File, HTTPException, Depends
 import os
 import uuid
-from ..auth import get_current_user
+from auth import get_current_user
 
 router = APIRouter(prefix="/uploads", tags=["uploads"])
 

@@ -1,15 +1,15 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
-import Login from './pages/Login';
-import LetterView from './pages/LetterView';
+import PasswordGate from './pages/PasswordGate';
+import Admin from './pages/Admin';
 
 function App() {
   return (
     <Router>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/letter/:id" element={<LetterView />} />
+        <Route path="/letter/:id" element={<PasswordGate />} />
+        <Route path="/admin" element={<Admin />} />
       </Routes>
     </Router>
   );

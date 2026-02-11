@@ -1,15 +1,24 @@
-from pymongo import MongoClient
-from pymongo.server_api import ServerApi
+# backend/database.py
 import os
-from dotenv import load_dotenv
+from pymongo import MongoClient
+import certifi
 
-load_dotenv()
+MONGODB_URI = os.getenv("MONGODB_URI", "")
+MONGODB_NAME = os.getenv("MONGODB_NAME", "")
 
-uri = os.getenv("MONGODB_URI")
-if not uri:
-    raise ValueError("MONGODB_URI is not set in .env file")
+if not MONGODB_URI:
+    raise RuntimeError("MONGODB_URI not set in environment")
+if not MONGODB_NAME:
+    raise RuntimeError("MONGODB_NAME not set in environment")
 
-client = MongoClient(uri, server_api=ServerApi('1'))
-db = client["love_letters"]
+client = MongoClient(
+    MONGODB_URI,
+    tlsCAFile=certifi.where(),
+    serverSelectionTimeoutMS=10000
+)
 
-print("✅ Connected to MongoDB")
+# Explicit DB handle
+db = client[MONGODB_NAME]
+
+def get_db():
+    return db
