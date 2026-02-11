@@ -9,19 +9,13 @@ from fastapi import HTTPException
 
 load_dotenv()
 
-ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "")
+ADMIN_TOKEN = os.getenv("ADMIN_PASSWORD")
 
 def check_admin_password(password: str):
     if password is None:
         raise HTTPException(status_code=403, detail="Invalid admin password")
-    if password.strip() != (ADMIN_PASSWORD or "").strip():
+    if password.strip() != (ADMIN_TOKEN or "").strip():
         raise HTTPException(status_code=403, detail="Invalid admin password")
-    if not password or password.strip() != (ADMIN_PASSWORD or "").strip():
-        raise HTTPException(status_code=403, detail="Invalid admin password")
-
-    
-
-
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")

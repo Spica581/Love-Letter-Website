@@ -7,24 +7,25 @@ export default function Tier2Letter({ letter }) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [hearts, setHearts] = useState([]);
 
+  // Floating hearts on scroll
   useEffect(() => {
-    const interval = setInterval(() => {
-      setHearts(prev => [...prev.slice(-8), { id: Date.now(), left: Math.random() * 100 }]);
-    }, 400);
-    return () => clearInterval(interval);
+    const handleScroll = () => {
+      setHearts(prev => [...prev.slice(-6), { id: Date.now(), left: Math.random() * 90 + 5 }]);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   return (
-    <div className="min-h-screen relative overflow-hidden" style={{ backgroundColor: letter.colors.bg }}>
-      {/* Floating hearts */}
-      {hearts.map(heart => (
+    <div className="min-h-screen relative" style={{ backgroundColor: letter.colors.bg }}>
+      {hearts.map(h => (
         <motion.div
-          key={heart.id}
+          key={h.id}
           initial={{ y: '100vh', opacity: 0 }}
-          animate={{ y: '-100vh', opacity: 1 }}
-          transition={{ duration: 8, ease: "linear" }}
+          animate={{ y: '-20vh', opacity: 0 }}
+          transition={{ duration: 6 }}
           className="absolute text-4xl pointer-events-none"
-          style={{ left: `${heart.left}vw`, color: letter.colors.accent }}
+          style={{ left: `${h.left}%`, color: letter.colors.accent }}
         >
           ❤️
         </motion.div>
@@ -32,13 +33,13 @@ export default function Tier2Letter({ letter }) {
 
       <Tier1Letter letter={letter} />
 
-      {/* Clickable heart for hidden message */}
-      <div className="absolute bottom-20 left-1/2 -translate-x-1/2">
+      {/* Clickable Heart for Hidden Message */}
+      <div className="fixed bottom-20 left-1/2 -translate-x-1/2 z-50">
         <motion.div
-          whileHover={{ scale: 1.3 }}
+          whileHover={{ scale: 1.4 }}
           whileTap={{ scale: 0.9 }}
           onClick={() => setShowHidden(!showHidden)}
-          className="text-7xl cursor-pointer hover:drop-shadow-2xl transition"
+          className="text-7xl cursor-pointer"
         >
           ❤️
         </motion.div>
@@ -46,29 +47,27 @@ export default function Tier2Letter({ letter }) {
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mt-4 text-center text-lg font-medium max-w-xs mx-auto px-6 py-3 bg-white/80 rounded-2xl shadow"
-            style={{ color: letter.colors.text }}
+            className="mt-4 bg-white/90 backdrop-blur px-8 py-4 rounded-2xl shadow text-center max-w-xs"
           >
             {letter.hidden_message}
           </motion.p>
         )}
       </div>
 
-      {/* Music Player */}
+      {/* Music Toggle */}
       {letter.music_url && (
         <div className="fixed bottom-8 right-8">
           <button
             onClick={() => {
-              const audio = document.getElementById('love-audio');
-              if (isPlaying) audio.pause();
-              else audio.play();
+              const audio = document.getElementById('love-music');
+              isPlaying ? audio.pause() : audio.play();
               setIsPlaying(!isPlaying);
             }}
-            className="bg-white/90 backdrop-blur px-6 py-3 rounded-full shadow-lg flex items-center gap-2 text-pink-600 font-medium"
+            className="bg-white/90 backdrop-blur px-6 py-3 rounded-full shadow-lg flex items-center gap-3"
           >
-            {isPlaying ? '⏸️ Pause Music' : '🎵 Play Our Song'}
+            {isPlaying ? '⏸️' : '🎵'} {isPlaying ? 'Pause Music' : 'Play Our Song'}
           </button>
-          <audio id="love-audio" src={`http://localhost:8000${letter.music_url}`} loop />
+          <audio id="love-music" src={`http://localhost:8000${letter.music_url}`} loop />
         </div>
       )}
     </div>

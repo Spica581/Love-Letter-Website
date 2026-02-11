@@ -1,9 +1,10 @@
 # backend/models.py
-from typing import Optional, Dict
+from typing import Optional, Dict, List
 from pydantic import BaseModel, Field
 from bson import ObjectId
 from pydantic.json_schema import JsonSchemaValue
 from pydantic_core import core_schema
+from datetime import datetime
 
 class PyObjectId(ObjectId):
     @classmethod
@@ -32,15 +33,17 @@ class PyObjectId(ObjectId):
 
 class Letter(BaseModel):
     id: Optional[PyObjectId] = Field(default=None, alias="_id")
+    tier: int = 2
     from_name: str
     to_name: str
     date: str
     content: str
     colors: Dict[str, str]
     hidden_message: Optional[str] = None
-    password: Optional[str] = None
     music_url: Optional[str] = None
-    tier: int = 2
+    photos: Optional[List[str]] = None          # For Tier 3
+    createdAt: datetime = Field(default_factory=datetime.utcnow)
+    updatedAt: datetime = Field(default_factory=datetime.utcnow)
 
     model_config = {
         "populate_by_name": True,
@@ -48,14 +51,13 @@ class Letter(BaseModel):
         "json_encoders": {ObjectId: str},
     }
 
-
 class User(BaseModel):
     id: Optional[PyObjectId] = Field(default=None, alias="_id")
     username: str
-    email: Optional[str] = None
-    hashed_password: Optional[str] = None
-    is_active: bool = True
-    is_superuser: bool = False
+    email: str
+    password: str
+    createdAt: datetime = Field(default_factory=datetime.utcnow)
+    updatedAt: datetime = Field(default_factory=datetime.utcnow)
 
     model_config = {
         "populate_by_name": True,
